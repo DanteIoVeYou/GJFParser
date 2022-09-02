@@ -7,7 +7,7 @@
 #include <unordered_map>
 #include <cstring>
 #include "utils.hpp"
-#include "constant.hpp"
+#include "Constant.hpp"
 
 
 /**
@@ -15,17 +15,21 @@
  * 
  */
 class GJFParser {
+    
 public:
+
     /**
      * @brief Construct a new GJFParser object
      * 
      */
     GJFParser() {}
+
     /**
      * @brief Construct a new GJFParser object
      * 
      * @param gjf_filename 
      */
+
     GJFParser(std::string gjf_filename) 
         :m_read_atom_flag(false)
     {
@@ -38,10 +42,17 @@ public:
 
         }
     }
+
+    /**
+     * @brief Destroy the GJFParser object
+     * 
+     */
     ~GJFParser() {
         m_gjf_file.close();
     }
+
 public:
+
     /**
      * @brief Get the Charge And Spin Multiplicity Line object
      * 
@@ -60,6 +71,11 @@ public:
         return m_atoms_line;
     }
 
+    /**
+     * @brief Get the Main Group Elements object
+     * 
+     * @return std::string 
+     */
     std::string GetMainGroupElements() {
         std::string str;
         for(auto elem: m_main_group_element_set) {
@@ -70,6 +86,13 @@ public:
     }
 
 private:
+
+    /**
+     * @brief 读取gjf文件的方法
+     * 
+     * @return true 
+     * @return false 
+     */
     bool ReadGJFFile() {
         std::string line;
         while(getline(m_gjf_file, line)) {
@@ -77,8 +100,6 @@ private:
             if(m_read_atom_flag) {
                 // 遇到空行退出
                 if(Utils::IsBlankLine(line)) {
-            std::cerr << "is blank" << std::endl;
-
                     break;
                 }
                 // 获取元素名称
@@ -124,6 +145,7 @@ private:
         }
         DistinguishMainGroupAndTransition();
     }
+
     /**
      * @brief 遍历所有元素的集合，将其分为主族元素和过渡金属元素并放入对应的集合中 
      * 
@@ -142,6 +164,7 @@ private:
             }
         }
     }
+
     /**
      * @brief 判断该行是否为含有电荷和自选多重度的行
      * 

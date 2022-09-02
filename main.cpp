@@ -1,7 +1,20 @@
 #include "Controller.hpp"
+
+/**
+ * @brief 使用手册
+ * 
+ */
 void Usage() {
     printf("manual:\n\t\tgen [filename]\n");
 }
+
+/**
+ * @brief 
+ * 
+ * @param argc 
+ * @param argv 
+ * @return int 
+ */
 int main(int argc, char* argv[])
 {
     if(argc != 2) {

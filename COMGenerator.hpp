@@ -6,7 +6,7 @@
 #include <unordered_map>
 #include <cstring>
 #include "GJFParser.hpp"
-#include "constant.hpp"
+#include "Constant.hpp"
 
 /**
  * @brief 换行符
@@ -19,22 +19,41 @@ const static std::string method = "#p b3lyp/gen Pseudo=Read opt freq=noraman";
 const static std::string a3= "a3";
 
 
+/**
+ * @brief .生成com文件的类
+ * 
+ */
 class COMGenerator {
 public:
+    /**
+     * @brief Construct a new COMGenerator object
+     * 
+     */
     COMGenerator() {}
 
+    /**
+     * @brief Construct a new COMGenerator object
+     * 
+     * @param gjf_filename 文件名
+     */
     COMGenerator(std::string gjf_filename):
         m_gjf_filename(gjf_filename),
         m_gjfparser(gjf_filename) 
-    {
-        
-    }
+    {}
 
-    ~COMGenerator() {
+    /**
+     * @brief Destroy the COMGenerator object
+     * 
+     */
+    ~COMGenerator() {}
 
-    }
 
-
+    /**
+     * @brief 构建.com文件
+     * 
+     * @return true 
+     * @return false 
+     */
     bool BuildFile() {
         m_file_content += (chk + Constant::LF);
         m_file_content += (mem + Constant::LF);
@@ -61,6 +80,12 @@ public:
         m_file_content += Constant::LF;
     }
 
+    /**
+     * @brief 导出.com文件
+     * 
+     * @return true 
+     * @return false 
+     */
     bool GenerateFile() {
         std::ofstream out((m_gjf_filename.substr(0, m_gjf_filename.find(".gjf")) + ".com"));
         if(out.is_open()) {
@@ -74,6 +99,11 @@ public:
         }
     }
 protected:
+    /**
+     * @brief 构建主族元素行
+     * 
+     * @return std::string 
+     */
     std::string BuildMainGroupElementsLine() {
         std::string main_group_elems;
         for(auto elem: m_gjfparser.m_main_group_element_set) {
@@ -84,6 +114,11 @@ protected:
         return main_group_elems;
     }
 
+    /**
+     * @brief 构建过渡元素的行
+     * 
+     * @return std::string 
+     */
     std::string BuildTransitionElementsLine() {
         std::string transition_elems;
         for(auto elem: m_gjfparser.m_transition_element_set) {
@@ -95,7 +130,19 @@ protected:
     }
 
 protected:
+    /**
+     * @brief gjf文件名
+     * 
+     */
     std::string m_gjf_filename;
-    GJFParser m_gjfparser;
+    /**
+     * @brief .com文件内容 
+     * 
+     */
     std::string m_file_content;
+    /**
+     * @brief 
+     * 
+     */
+    GJFParser m_gjfparser;
 };

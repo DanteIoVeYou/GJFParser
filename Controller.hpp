@@ -9,14 +9,33 @@
 #include "COMGenerator.hpp"
 #include "PBSGenterator.hpp"
 
+/**
+ * @brief 控制器类
+ * 
+ */
 class Controller {
 public:
+    /**
+     * @brief Construct a new Controller object
+     * 
+     * @param gjf_filename 
+     */
     Controller(std::string gjf_filename):
         m_gjf_filename(gjf_filename),
         m_com_generator(m_gjf_filename),
         m_pbs_generator(m_gjf_filename)
     {}
 
+    /**
+     * @brief Destroy the Controller object
+     * 
+     */
+    ~Controller() {}
+
+    /**
+     * @brief 调用com generator和pbs generator的构建、导出文件的方法
+     * 
+     */
     void Start() {
         m_com_generator.BuildFile();
         m_com_generator.GenerateFile();
@@ -24,11 +43,22 @@ public:
         m_pbs_generator.GenerateFile();
     }
 
-    ~Controller() {}
 
 protected:
+    /**
+     * @brief gjf文件名
+     * 
+     */
     std::string m_gjf_filename;
     // GJFParser m_gjf_parser;
+    /**
+     * @brief com generator成员
+     * 
+     */
     COMGenerator m_com_generator;
+    /**
+     * @brief pbs generator成员
+     * 
+     */
     PBSGenerator m_pbs_generator;
 };

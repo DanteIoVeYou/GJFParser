@@ -33,7 +33,9 @@ const static std::unordered_set<std::string> transition_element_table = {
  * 
  */
 class Utils {
+
 public:
+
     /**
      * @brief 根据sep将字符串切分为两部分 
      * 
@@ -84,6 +86,7 @@ public:
     static bool IsTransitionGroupElement(const std::string &elememt) {
         return transition_element_table.find(elememt) != transition_element_table.end();
     }
+
     /**
      * @brief 判断空行
      * 
