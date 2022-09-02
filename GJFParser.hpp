@@ -8,11 +8,6 @@
 #include <cstring>
 #include "utils.hpp"
 
-/**
- * @brief 换行符
- * 
- */
-const static std::string LF = "\r\n";
 
 /**
  * @brief 读取、提取、处理gjf文件信息的类 
@@ -52,7 +47,7 @@ public:
      * @return std::string 
      */
     std::string GetChargeAndSpinMultiplicityLine() {
-        return m_charge_and_spin_multiplicity;
+        return m_charge_and_spin_multiplicity_line;
     }
 
     /**
@@ -69,7 +64,7 @@ public:
         for(auto elem: m_main_group_element_set) {
             str += (elem + ' ');
         }
-        str += LF;
+        str += "\n";
         return str;
     }
 
@@ -77,11 +72,13 @@ private:
     bool ReadGJFFile() {
         std::string line;
         while(getline(m_gjf_file, line)) {
-            // 读取原子和原子坐标
+            // 接下来会读取原子和原子坐标
             if(m_read_atom_flag) {
+                // 遇到空行退出
                 if(Utils::IsBlankLine(line)) {
                     break;
                 }
+                // 获取元素名称
                 int start = 0;
                 for (; start < line.size(); start++)
                 {
@@ -98,15 +95,19 @@ private:
                         break;
                     }
                 }
+                // 将含有原子坐标的行添加入数组
                 m_atoms_table.push_back(line);
             }
             // 读取含有电荷与自旋多重度的行
-            if(JudgeChargeAndMultiplicityLine(line)) {
+            else if(JudgeChargeAndMultiplicityLine(line)) {
                 std::string charge;
                 std::string spin_multiplicity;
                 if(ReadChargeandSpinMultiplicity(line, &charge, &spin_multiplicity, " ")) {
-                    line.back() = '\n';
-                    m_charge_and_spin_multiplicity = line;
+                    if(int pos = line.find('\r') != std::string::npos) {
+                        line[pos] = '\n';
+                    }
+                    // line.back() = '\n';
+                    m_charge_and_spin_multiplicity_line = line;
                     m_charge = atoi(charge.c_str());
                     m_spin_multiplicity = atoi(charge.c_str());
                     m_read_atom_flag = true;
@@ -199,7 +200,7 @@ protected:
      * @brief 包含电荷以及自旋多重度的行 
      * 
      */
-    std::string m_charge_and_spin_multiplicity;
+    std::string m_charge_and_spin_multiplicity_line;
     /**
      * @brief 体系所带电荷数
      * 
