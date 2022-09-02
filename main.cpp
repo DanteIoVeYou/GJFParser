@@ -1,7 +1,13 @@
-#include "COMGenerator.hpp"
-int main()
+#include "Controller.hpp"
+void Usage() {
+    printf("manual:\n\t\tgen [filename]\n");
+}
+int main(int argc, char* argv[])
 {
-    COMGenerator comgen("B.gjf");
-    comgen.GenerateFile();
-    comgen.BuildFile();
+    if(argc != 2) {
+        Usage();
+    }
+    Controller *controller = new Controller(argv[1]);
+    controller->Start();
+    delete (controller);
 }
