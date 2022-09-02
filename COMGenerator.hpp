@@ -43,8 +43,10 @@ public:
         m_file_content += Constant::LF;
         m_file_content += (a3 + Constant::LF);
         m_file_content += Constant::LF;
-        m_file_content += (m_gjfparser.GetChargeAndSpinMultiplicityLine() + Constant::LF);
-        m_file_content += m_gjfparser.GetAtomAndCoordinate();
+        m_file_content += (m_gjfparser.GetChargeAndSpinMultiplicityLine());
+        m_file_content += Constant::LF;
+        m_file_content += (m_gjfparser.GetAtomAndCoordinate() + Constant::LF);
+        m_file_content += Constant::LF;
         if(!m_gjfparser.m_transition_element_set.empty()) {
             m_file_content += (BuildMainGroupElementsLine() + Constant::LF);
             m_file_content += ("6-31G(d)" + Constant::LF);
