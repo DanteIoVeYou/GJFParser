@@ -23,8 +23,9 @@ class COMGenerator {
 public:
     COMGenerator() {}
 
-    COMGenerator(std::string gjf_filename)
-        :m_gjfparser(gjf_filename) 
+    COMGenerator(std::string gjf_filename):
+        m_gjf_filename(gjf_filename),
+        m_gjfparser(gjf_filename) 
     {
         
     }
@@ -59,7 +60,7 @@ public:
     }
 
     bool GenerateFile() {
-        std::ofstream out("test.com");
+        std::ofstream out((m_gjf_filename.substr(0, m_gjf_filename.find(".gjf")) + ".com"));
         if(out.is_open()) {
             out << m_file_content;
             out.close();
@@ -92,6 +93,7 @@ protected:
     }
 
 protected:
+    std::string m_gjf_filename;
     GJFParser m_gjfparser;
     std::string m_file_content;
 };

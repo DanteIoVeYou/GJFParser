@@ -95,6 +95,16 @@ public:
         if(line.size() == 0) {
             return true;
         }
+        else if(line == "\r\n") {
+            std::cerr << "is blank" << std::endl;
+            return true;
+        }
+        else if(line == "\n") {
+            return true;
+        }
+        else if(line == "\r") {
+            return true;
+        }
         else {
             for (int i = 0; i < line.size(); i++) {
                 if (line[i] == ' ') {

@@ -7,6 +7,7 @@
 #include <unordered_map>
 #include <cstring>
 #include "utils.hpp"
+#include "constant.hpp"
 
 
 /**
@@ -76,6 +77,8 @@ private:
             if(m_read_atom_flag) {
                 // 遇到空行退出
                 if(Utils::IsBlankLine(line)) {
+            std::cerr << "is blank" << std::endl;
+
                     break;
                 }
                 // 获取元素名称
@@ -103,11 +106,7 @@ private:
                 std::string charge;
                 std::string spin_multiplicity;
                 if(ReadChargeandSpinMultiplicity(line, &charge, &spin_multiplicity, " ")) {
-                    if(int pos = line.find('\r') != std::string::npos) {
-                        line[pos] = '\n';
-                    }
-                    // line.back() = '\n';
-                    m_charge_and_spin_multiplicity_line = line;
+                    m_charge_and_spin_multiplicity_line = (charge + " " + spin_multiplicity);
                     m_charge = atoi(charge.c_str());
                     m_spin_multiplicity = atoi(charge.c_str());
                     m_read_atom_flag = true;
@@ -120,7 +119,7 @@ private:
             }
         }
         for(const auto &line: m_atoms_table) {
-            m_atoms_line.back() = '\n';
+            m_atoms_line.back() = Constant::LF[0];
             m_atoms_line += line;
         }
         DistinguishMainGroupAndTransition();
