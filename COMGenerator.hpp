@@ -12,10 +12,8 @@
  * @brief 换行符
  * 
  */
-const static std::string chk = "%chk=M-opt";
 const static std::string mem = "%mem=2gb";
 const static std::string proc = "%nprocshared=10";
-const static std::string method = "#p b3lyp/gen Pseudo=Read opt freq=noraman";
 const static std::string a3= "a3";
 
 
@@ -36,10 +34,29 @@ public:
      * 
      * @param gjf_filename 文件名
      */
-    COMGenerator(std::string gjf_filename):
+    COMGenerator(std::string gjf_filename, int option):
         m_gjf_filename(gjf_filename),
-        m_gjfparser(gjf_filename) 
-    {}
+        m_chk_filename("%chk=" + m_gjf_filename.substr(0, m_gjf_filename.find(".gjf"))),
+        m_gjfparser(gjf_filename),
+        m_option(option) 
+    {
+        if(m_option == OPT) {
+            if(m_gjfparser.m_transition_element_set.empty()) {
+                m_method = Constant::opt_method;
+            }
+            else {
+                m_method = Constant::metal_opt_method;
+            }
+        }
+        else if(m_option == TS) {
+            if(m_gjfparser.m_transition_element_set.empty()) {
+                m_method = Constant::ts_method;
+            }
+            else {
+                m_method = Constant::metal_ts_method;
+            }
+        }
+    }
 
     /**
      * @brief Destroy the COMGenerator object
@@ -55,10 +72,10 @@ public:
      * @return false 
      */
     bool BuildFile() {
-        m_file_content += (chk + Constant::LF);
+        m_file_content += (m_chk_filename + Constant::LF);
         m_file_content += (mem + Constant::LF);
         m_file_content += (proc+ Constant::LF);
-        m_file_content += (method + Constant::LF);
+        m_file_content += (m_method + Constant::LF);
         m_file_content += Constant::LF;
         m_file_content += (a3 + Constant::LF);
         m_file_content += Constant::LF;
@@ -139,10 +156,14 @@ protected:
      * @brief .com文件内容 
      * 
      */
+    std::string m_chk_filename;
     std::string m_file_content;
     /**
      * @brief 
      * 
      */
     GJFParser m_gjfparser;
+    int m_option;
+    std::string m_method;
+
 };
