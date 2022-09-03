@@ -11,7 +11,10 @@ public:
      * @brief 换行符
      * 
      */
-    static std::string LF;
+    static const std::string LF;
+
+    static const std::string COMMENT_MARK;
 };
 
-std::string Constant::LF = "\n";
+const std::string Constant::LF = "\n";
+const std::string Constant::COMMENT_MARK = "#";
