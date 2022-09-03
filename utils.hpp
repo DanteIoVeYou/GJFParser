@@ -36,6 +36,23 @@ class Utils {
 
 public:
 
+    static bool IsInteger(const std::string &num) {
+        int start = 0;
+        if (num[0] == '-') {
+            start++;
+        }
+        for (int i = start; i < num.size(); i++)
+        {
+            if(num[i] >= '0' || num[i] <= '9') {
+                continue;
+            }
+            else {
+                return false;
+            }
+        }
+        return true;
+    }
+
     /**
      * @brief 根据sep将字符串切分为两部分 
      * 
