@@ -52,6 +52,7 @@ public:
         m_file_content += (Constant::LF);
         m_file_content += ("#executable programe" + Constant::LF);
         m_file_content += ("cd $PBS_O_WORKDIR" + Constant::LF);
+        m_file_content += ("g16 < $FILENAME >$FILENAME.log" + Constant::LF);
     }
 
     /**
