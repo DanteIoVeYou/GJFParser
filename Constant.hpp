@@ -13,6 +13,9 @@ enum OPTION
  */
 class Constant {
 public:
+    Constant() {}
+    ~Constant() {}
+
     /**
      * @brief 换行符
      * 
