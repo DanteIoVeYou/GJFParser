@@ -51,6 +51,14 @@ public:
         m_gjf_file.close();
     }
 
+    void SetCharge(int charge) {
+        m_charge = charge;
+    }
+
+    void SetSpin(int spin_multiplicity) {
+        m_spin_multiplicity = spin_multiplicity;
+    }
+
 public:
 
     /**

@@ -40,21 +40,21 @@ public:
         m_gjfparser(gjf_filename),
         m_option(option) 
     {
-        if(m_option == OPT) {
-            if(m_gjfparser.m_transition_element_set.empty()) {
-                m_method = Constant::opt_method;
-            }
-            else {
-                m_method = Constant::metal_opt_method;
-            }
+        SetMethod();
+    }
+
+    COMGenerator(std::string gjf_filename, int option, bool charge_flag, int charge, bool spin_flag, int spin):
+        m_gjf_filename(gjf_filename),
+        m_chk_filename("%chk=" + m_gjf_filename.substr(0, m_gjf_filename.find(".gjf"))),
+        m_gjfparser(gjf_filename),
+        m_option(option) 
+    {
+        SetMethod();
+        if(charge_flag) {
+            m_gjfparser.SetCharge(charge);
         }
-        else if(m_option == TS) {
-            if(m_gjfparser.m_transition_element_set.empty()) {
-                m_method = Constant::ts_method;
-            }
-            else {
-                m_method = Constant::metal_ts_method;
-            }
+        if(spin_flag) {
+            m_gjfparser.SetSpin(spin);
         }
     }
 
@@ -116,6 +116,28 @@ public:
         }
     }
 protected:
+
+    void SetMethod() {
+        if(m_option == OPT) {
+            if(m_gjfparser.m_transition_element_set.empty()) {
+                m_method = Constant::opt_method;
+            }
+            else {
+                m_method = Constant::metal_opt_method;
+            }
+        }
+        else if(m_option == TS) {
+            if(m_gjfparser.m_transition_element_set.empty()) {
+                m_method = Constant::ts_method;
+            }
+            else {
+                m_method = Constant::metal_ts_method;
+            }
+        }
+    }
+
+
+
     /**
      * @brief 构建主族元素行
      * 
@@ -145,6 +167,7 @@ protected:
         transition_elems += '0';
         return transition_elems;
     }
+
 
 protected:
     /**
