@@ -188,6 +188,7 @@ private:
                 return false;
             }
     }
+
     /**
      * @brief 读取电荷和自选多重度
      * 
@@ -204,53 +205,66 @@ private:
     }
 
 protected:
+
     /**
      * @brief gjf文件流
      * 
      */
+
     std::ifstream m_gjf_file;
     /**
      * @brief 总元素种类的集合
      * 
      */
+
     std::unordered_set<std::string> m_element_set;
+
 public:
+
     /**
      * @brief 主族元素种类的集合
      * 
      */
     std::unordered_set<std::string> m_main_group_element_set;
+
     /**
      * @brief 过渡金属元素种类的集合
      * 
      */
     std::unordered_set<std::string> m_transition_element_set;
+
 protected:
+
     /**
      * @brief 包含电荷以及自旋多重度的行 
      * 
      */
     std::string m_charge_and_spin_multiplicity_line;
+
     /**
      * @brief 体系所带电荷数
      * 
      */
     int m_charge;
+
     /**
      * @brief 体系自选多重度
      * 
      */
     int m_spin_multiplicity;
+
     /**
      * @brief 开始读取原子坐标的标志
      * 
      */
     bool m_read_atom_flag;
+
     /**
      * @brief 每个成员为一行 元素+坐标 的数组
      * 
      */
     std::vector<std::string> m_atoms_table;
+
     /**
      * @brief 元素+坐标的行文本
      * 

@@ -75,7 +75,7 @@ public:
         m_file_content += (m_chk_filename + Constant::LF);
         m_file_content += (mem + Constant::LF);
         m_file_content += (proc+ Constant::LF);
-        m_file_content += (m_method + Constant::LF);
+        m_file_content += (m_route + Constant::LF);
         m_file_content += Constant::LF;
         m_file_content += (a3 + Constant::LF);
         m_file_content += Constant::LF;
@@ -120,23 +120,21 @@ protected:
     void SetMethod() {
         if(m_option == OPT) {
             if(m_gjfparser.m_transition_element_set.empty()) {
-                m_method = Constant::opt_method;
+                m_route = Constant::opt_method;
             }
             else {
-                m_method = Constant::metal_opt_method;
+                m_route = Constant::metal_opt_method;
             }
         }
         else if(m_option == TS) {
             if(m_gjfparser.m_transition_element_set.empty()) {
-                m_method = Constant::ts_method;
+                m_route = Constant::ts_method;
             }
             else {
-                m_method = Constant::metal_ts_method;
+                m_route = Constant::metal_ts_method;
             }
         }
     }
-
-
 
     /**
      * @brief 构建主族元素行
@@ -180,13 +178,35 @@ protected:
      * 
      */
     std::string m_chk_filename;
+    /**
+     * @brief .com文件内容
+     * 
+     */
     std::string m_file_content;
     /**
      * @brief 
      * 
      */
     GJFParser m_gjfparser;
+    /**
+     * @brief 第一个参数，用来选择优化/过渡态搜索
+     * 
+     */
     int m_option;
-    std::string m_method;
+    /**
+     * @brief com文件的link0行，以%开头，如%chk、%mem、%nprocshared
+     * 
+     */
+    std::string m_link0;
+    /**
+     * @brief 标题
+     * 
+     */
+    std::string m_title;
+    /**
+     * @brief route行
+     * 
+     */
+    std::string m_route;
 
 };

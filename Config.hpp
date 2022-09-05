@@ -125,8 +125,5 @@ protected:
         *value = new_line.substr(pos_sep + 1);
         return true;
     }
-
-public:
-
 };
 
