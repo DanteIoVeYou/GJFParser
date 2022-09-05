@@ -23,7 +23,7 @@ public:
      * @return true
      * @return false
      */
-    bool ReadConfigFile(const std::string &filename, std::unordered_map<std::string, std::string> &map) {
+    Config(const std::string &filename) {
         std::ifstream in(filename);
         if(in.is_open()) {
             std::string line;
@@ -48,9 +48,9 @@ public:
                             continue;
                         }
                         else {
-                            if(map.find(key) != map.end()) {
+                            if(m_config_map.find(key) != m_config_map.end()) {
                                 // 找到对应的键
-                                map[key] = value;
+                                m_config_map[key] = value;
                             }
                             else {
                                 // 非法的键
@@ -64,6 +64,10 @@ public:
         else {
             // error
         }
+    }
+
+    std::unordered_map<std::string, std::string> GetConfigMap() {
+        return m_config_map;
     }
 
 protected:
@@ -125,5 +129,7 @@ protected:
         *value = new_line.substr(pos_sep + 1);
         return true;
     }
+protected:
+    std::unordered_map<std::string, std::string> m_config_map;
 };
 

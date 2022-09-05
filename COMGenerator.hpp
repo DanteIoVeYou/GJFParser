@@ -34,17 +34,16 @@ public:
         m_gjfparser(gjfparser),
         m_option(option) 
     {
-        SetMethod();
         SetConfig();
     }
 
-    COMGenerator(std::string gjf_filename, int option, bool charge_flag, int charge, bool spin_flag, int spin):
+    COMGenerator(Config config, GJFParser gjfparser, std::string gjf_filename, int option, bool charge_flag, int charge, bool spin_flag, int spin):
         m_gjf_filename(gjf_filename),
         m_chk_filename("%chk=" + m_gjf_filename.substr(0, m_gjf_filename.find(".gjf"))),
-        m_gjfparser(gjf_filename),
+        m_config(config),
+        m_gjfparser(gjfparser),
         m_option(option) 
     {
-        SetMethod();
         if(charge_flag) {
             m_gjfparser.SetCharge(charge);
         }
@@ -128,11 +127,14 @@ public:
         }
     }
 protected:
+
     bool NeedPseudo() {
         return m_gjfparser.m_transition_element_set.empty();
     }
+
     bool BuildLink0() {
-        if(m_link0.empty()) {
+        m_file_content += (m_chk_filename + Constant::LF);
+        if (m_link0.empty()) {
             m_file_content += ("%mem=2gb" + Constant::LF);
             m_file_content += ("%nprocshared=10" + Constant::LF);
             return true;
@@ -158,6 +160,22 @@ protected:
     }
 
     bool BuildRoute() {
+        if(m_option == OPT) {
+            if(m_gjfparser.m_transition_element_set.empty()) {
+                m_route = m_opt_route;
+            }
+            else {
+                m_route = m_pseudo_opt_route;
+            }
+        }
+        else if(m_option == TS) {
+            if(m_gjfparser.m_transition_element_set.empty()) {
+                m_route = m_ts_route;
+            }
+            else {
+                m_route = m_pseudo_ts_route;
+            }
+        }
         if(m_route.empty()) {
             std::cerr << "route not found" << std::endl;
             return false;
@@ -181,7 +199,9 @@ protected:
     }
 
     bool BuildChargeMultipl() {
-        if(m_charge_multipl.empty()) {
+        m_charge_multipl = m_gjfparser.GetChargeAndSpinMultiplicityLine();
+        if (m_charge_multipl.empty())
+        {
             std::cerr << "charge and multiplicity not found" << std::endl;
             return false;
         }
@@ -192,7 +212,9 @@ protected:
     }
 
     bool BuildMoleculeSpecification() {
-        if(m_molecule_specification.empty()) {
+        m_molecule_specification = m_gjfparser.GetChargeAndSpinMultiplicityLine();
+        if (m_molecule_specification.empty())
+        {
             return false;
         }
         else {
@@ -202,6 +224,11 @@ protected:
     }
 
     bool BuildFullElectronicBasicSet() {
+        for(auto elem: m_gjfparser.m_main_group_element_set) {
+            m_full_electronic_elements += elem;
+            m_full_electronic_elements += ' ';
+        }
+        m_full_electronic_elements += '0';
         if(m_full_electronic_elements.empty() || m_full_electronic_basic_set.empty()) {
             return false;
         }
@@ -214,87 +241,48 @@ protected:
     }
 
     bool BuildPseudoBasicSet() {
+        for(auto elem: m_gjfparser.m_transition_element_set) {
+            m_pseudo_elements += elem;
+            m_pseudo_elements += ' ';
+        }
+        m_pseudo_elements += '0';
         if(m_pseudo_elements.empty() || m_pseudo_basic_set.empty()) {
             return false;
         }
         else {
-            m_file_content += (m_full_electronic_elements + Constant::LF);
-            m_file_content += (m_full_electronic_basic_set + Constant::LF);
+            m_file_content += (m_pseudo_elements + Constant::LF);
+            m_file_content += (m_pseudo_basic_set + Constant::LF);
             m_file_content += ("****");
             return true;
         }
     }
+
     bool BuildPseudo() {
         if(m_pseudo_elements.empty() || m_pseudo_basic_set.empty()) {
             return false;
         }
         else {
-            m_file_content += (m_full_electronic_elements + Constant::LF);
-            m_file_content += (m_full_electronic_basic_set + Constant::LF);
+            m_file_content += (m_pseudo_elements + Constant::LF);
+            m_file_content += (m_pseudo + Constant::LF);
             return true;
         }
     }
-
 
     bool BuildBlankLine() {
         m_file_content += Constant::LF;
         return true;
     }
 
-    void SetMethod() {
-        if(m_option == OPT) {
-            if(m_gjfparser.m_transition_element_set.empty()) {
-                m_route = Constant::opt_method;
-            }
-            else {
-                m_route = Constant::metal_opt_method;
-            }
-        }
-        else if(m_option == TS) {
-            if(m_gjfparser.m_transition_element_set.empty()) {
-                m_route = Constant::ts_method;
-            }
-            else {
-                m_route = Constant::metal_ts_method;
-            }
-        }
-    }
-
-
     void SetConfig() {
-        std::unordered_map<std::string, std::string> config_map;
-        m_config.ReadConfigFile("com.config", config_map);
-        m_
-    }
-
-    /**
-     * @brief 构建主族元素行
-     * 
-     * @return std::string 
-     */
-    std::string BuildMainGroupElementsLine() {
-        std::string main_group_elems;
-        for(auto elem: m_gjfparser.m_main_group_element_set) {
-            main_group_elems += elem;
-            main_group_elems += ' ';
-        }
-        main_group_elems += '0';
-        return main_group_elems;
-    }
-
-    /**
-     * @brief 构建过渡元素的行
-     * 
-     * @return std::string 
-     */
-    std::string BuildTransitionElementsLine() {
-        std::string transition_elems;
-        for(auto elem: m_gjfparser.m_transition_element_set) {
-            transition_elems += elem;
-            transition_elems += ' ';
-        }
-        transition_elems += '0';
-        return transition_elems;
+        m_link0 = m_config.GetConfigMap()["LINK0"];
+        m_opt_route = m_config.GetConfigMap()["OPT_ROUTE"];
+        m_pseudo_opt_route = m_config.GetConfigMap()["PSEUDO_OPT_ROUTE"];
+        m_ts_route = m_config.GetConfigMap()["TS_ROUTE"];
+        m_pseudo_ts_route = m_config.GetConfigMap()["PSEUDO_TS_ROUTE"];
+        m_title = m_config.GetConfigMap()["TITLE"];
+        m_full_electronic_basic_set = m_config.GetConfigMap()["BASIC_SET"];
+        m_pseudo_basic_set = m_config.GetConfigMap()["PSEUDOPOTENTIAL_BASIC_SET"];
+        m_pseudo = m_config.GetConfigMap()["PSEUDOPOTENTIAL"];
     }
 
 
@@ -354,4 +342,5 @@ protected:
     std::string m_full_electronic_basic_set;
     std::string m_pseudo_elements;
     std::string m_pseudo_basic_set;
+    std::string m_pseudo;
 };

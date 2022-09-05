@@ -18,7 +18,7 @@ public:
     Controller(std::string gjf_filename, int option):
         m_gjf_filename(gjf_filename),
         m_option(option),
-        m_com_generator(m_gjf_filename, m_option),
+        m_com_generator(m_option),
         m_pbs_generator(m_gjf_filename)
     {}
     /**
@@ -60,6 +60,8 @@ protected:
     // GJFParser m_gjf_parser;
 
     int m_option;
+    Config m_config;
+    GJFParser m_gjfparser;
     /**
      * @brief com generator成员
      *
