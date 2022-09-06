@@ -24,6 +24,18 @@ public:
      */
     GJFParser() {}
 
+    GJFParser(const GJFParser& gjfparser) {
+        m_element_set = gjfparser.m_element_set;
+        m_main_group_element_set = gjfparser.m_main_group_element_set;
+        m_transition_element_set = gjfparser.m_transition_element_set;
+        m_charge_and_spin_multiplicity_line = gjfparser.m_charge_and_spin_multiplicity_line;
+        m_charge = gjfparser.m_charge;
+        m_spin_multiplicity = gjfparser.m_spin_multiplicity;
+        m_read_atom_flag = gjfparser.m_read_atom_flag;
+        m_atoms_table = gjfparser.m_atoms_table;
+        m_atoms_line = gjfparser.m_atoms_line;
+    }
+
     /**
      * @brief Construct a new GJFParser object
      * 

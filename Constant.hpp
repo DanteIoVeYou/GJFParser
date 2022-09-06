@@ -1,6 +1,10 @@
 #pragma once
 #include <string>
 
+/**
+ * @brief option参数的枚举
+ * 
+ */
 enum OPTION
 {
     OPT,

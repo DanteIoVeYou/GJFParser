@@ -130,6 +130,10 @@ protected:
         return true;
     }
 protected:
+    /**
+     * @brief 含有配置文件key、value的哈希表
+     * 
+     */
     std::unordered_map<std::string, std::string> m_config_map;
 };
 

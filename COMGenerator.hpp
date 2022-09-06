@@ -20,7 +20,7 @@ public:
      * @brief Construct a new COMGenerator object
      * 
      */
-    COMGenerator() {}
+    // COMGenerator() {}
 
     /**
      * @brief Construct a new COMGenerator object
@@ -273,12 +273,12 @@ protected:
             m_full_electronic_elements += ' ';
         }
         m_full_electronic_elements += '0';
-        if(m_full_electronic_elements.empty() || m_full_electronic_basic_set.empty()) {
+        if(m_full_electronic_elements.empty() || m_full_electronic_basic_set_method.empty()) {
             return false;
         }
         else {
             m_file_content += (m_full_electronic_elements + Constant::LF);
-            m_file_content += (m_full_electronic_basic_set + Constant::LF);
+            m_file_content += (m_full_electronic_basic_set_method + Constant::LF);
             m_file_content += ("****" + Constant::LF);
             return true;
         }
