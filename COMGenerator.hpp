@@ -44,6 +44,7 @@ public:
         m_gjfparser(gjfparser),
         m_option(option) 
     {
+        SetConfig();
         if(charge_flag) {
             m_gjfparser.SetCharge(charge);
         }
@@ -126,12 +127,25 @@ public:
             return false;
         }
     }
+
 protected:
 
+    /**
+     * @brief 判断是否需要赝势
+     * 
+     * @return true 
+     * @return false 
+     */
     bool NeedPseudo() {
         return m_gjfparser.m_transition_element_set.empty();
     }
 
+    /**
+     * @brief 构建link0行，包含chk文件名，内存，共享核心数
+     * 
+     * @return true 
+     * @return false 
+     */
     bool BuildLink0() {
         m_file_content += (m_chk_filename + Constant::LF);
         if (m_link0.empty()) {
@@ -159,6 +173,12 @@ protected:
         }
     }
 
+    /**
+     * @brief 构建route行
+     * 
+     * @return true 
+     * @return false 
+     */
     bool BuildRoute() {
         if(m_option == OPT) {
             if(m_gjfparser.m_transition_element_set.empty()) {
@@ -186,6 +206,12 @@ protected:
         }
     }
 
+    /**
+     * @brief 构建标题行 
+     * 
+     * @return true 
+     * @return false 
+     */
     bool BuildTitle() {
         if(m_title.empty()) {
             std::cerr << "title is set defaultly with a3" << std::endl;
@@ -198,6 +224,12 @@ protected:
         }
     }
 
+    /**
+     * @brief 构建电荷数、自旋多重度行 
+     * 
+     * @return true 
+     * @return false 
+     */
     bool BuildChargeMultipl() {
         m_charge_multipl = m_gjfparser.GetChargeAndSpinMultiplicityLine();
         if (m_charge_multipl.empty())
@@ -211,6 +243,12 @@ protected:
         }
     }
 
+    /**
+     * @brief 构建原子、原子坐标部分
+     * 
+     * @return true 
+     * @return false 
+     */
     bool BuildMoleculeSpecification() {
         m_molecule_specification = m_gjfparser.GetChargeAndSpinMultiplicityLine();
         if (m_molecule_specification.empty())
@@ -223,6 +261,12 @@ protected:
         }
     }
 
+    /**
+     * @brief 全电子基组
+     * 
+     * @return true 
+     * @return false 
+     */
     bool BuildFullElectronicBasicSet() {
         for(auto elem: m_gjfparser.m_main_group_element_set) {
             m_full_electronic_elements += elem;
@@ -240,6 +284,12 @@ protected:
         }
     }
 
+    /**
+     * @brief 赝势基组 
+     * 
+     * @return true 
+     * @return false 
+     */
     bool BuildPseudoBasicSet() {
         for(auto elem: m_gjfparser.m_transition_element_set) {
             m_pseudo_elements += elem;
@@ -257,6 +307,12 @@ protected:
         }
     }
 
+    /**
+     * @brief 赝势 
+     * 
+     * @return true 
+     * @return false 
+     */
     bool BuildPseudo() {
         if(m_pseudo_elements.empty() || m_pseudo_basic_set.empty()) {
             return false;
@@ -268,11 +324,21 @@ protected:
         }
     }
 
+    /**
+     * @brief 构建空行
+     * 
+     * @return true 
+     * @return false 
+     */
     bool BuildBlankLine() {
         m_file_content += Constant::LF;
         return true;
     }
 
+    /**
+     * @brief 从m_config类中读取配置项 
+     * 
+     */
     void SetConfig() {
         m_link0 = m_config.GetConfigMap()["LINK0"];
         m_opt_route = m_config.GetConfigMap()["OPT_ROUTE"];
@@ -280,7 +346,7 @@ protected:
         m_ts_route = m_config.GetConfigMap()["TS_ROUTE"];
         m_pseudo_ts_route = m_config.GetConfigMap()["PSEUDO_TS_ROUTE"];
         m_title = m_config.GetConfigMap()["TITLE"];
-        m_full_electronic_basic_set = m_config.GetConfigMap()["BASIC_SET"];
+        m_full_electronic_basic_set_method = m_config.GetConfigMap()["BASIC_SET_METHOD"];
         m_pseudo_basic_set = m_config.GetConfigMap()["PSEUDOPOTENTIAL_BASIC_SET"];
         m_pseudo = m_config.GetConfigMap()["PSEUDOPOTENTIAL"];
     }
@@ -317,9 +383,25 @@ protected:
      * 
      */
     int m_option;
+    /**
+     * @brief 配置文件中读取的opt的route行
+     * 
+     */
     std::string m_opt_route;
+    /**
+     * @brief 配置文件中读取的pseudo opt的route行
+     * 
+     */
     std::string m_pseudo_opt_route;
+    /**
+     * @brief 配置文件中读取的ts的route行
+     * 
+     */
     std::string m_ts_route;
+    /**
+     * @brief 配置文件中读取的pseudo ts的route行
+     * 
+     */
     std::string m_pseudo_ts_route;
     /**
      * @brief com文件的link0行，以%开头，如%chk、%mem、%nprocshared
@@ -332,15 +414,43 @@ protected:
      */
     std::string m_route;
     /**
-     * @brief 标题
+     * @brief 标题行
      * 
      */
     std::string m_title;
+    /**
+     * @brief 电荷+自旋多重度行
+     * 
+     */
     std::string m_charge_multipl;
+    /**
+     * @brief 原子、原子坐标部分
+     * 
+     */
     std::string m_molecule_specification;
+    /**
+     * @brief 全电子原子行
+     * 
+     */
     std::string m_full_electronic_elements;
-    std::string m_full_electronic_basic_set;
+    /**
+     * @brief 全电子基组的方法 
+     * 
+     */
+    std::string m_full_electronic_basic_set_method;
+    /**
+     * @brief 需要使用赝势的元素
+     * 
+     */
     std::string m_pseudo_elements;
+    /**
+     * @brief 赝势基组
+     * 
+     */
     std::string m_pseudo_basic_set;
+    /**
+     * @brief 赝势
+     * 
+     */
     std::string m_pseudo;
 };
