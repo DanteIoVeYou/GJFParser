@@ -24,18 +24,6 @@ public:
      */
     GJFParser() {}
 
-    GJFParser(const GJFParser& gjfparser) {
-        m_element_set = gjfparser.m_element_set;
-        m_main_group_element_set = gjfparser.m_main_group_element_set;
-        m_transition_element_set = gjfparser.m_transition_element_set;
-        m_charge_and_spin_multiplicity_line = gjfparser.m_charge_and_spin_multiplicity_line;
-        m_charge = gjfparser.m_charge;
-        m_spin_multiplicity = gjfparser.m_spin_multiplicity;
-        m_read_atom_flag = gjfparser.m_read_atom_flag;
-        m_atoms_table = gjfparser.m_atoms_table;
-        m_atoms_line = gjfparser.m_atoms_line;
-    }
-
     /**
      * @brief Construct a new GJFParser object
      * 
@@ -45,13 +33,12 @@ public:
     GJFParser(std::string gjf_filename) 
         :m_read_atom_flag(false)
     {
-        m_gjf_file = std::ifstream(gjf_filename);
-        if(m_gjf_file.is_open()) {
-            ReadGJFFile();
+        std::ifstream gjf_file(gjf_filename);
+        if(gjf_file.is_open()) {
+            ReadGJFFile(gjf_file);
         }
         else {
             // open file error
-
         }
     }
 
@@ -59,9 +46,7 @@ public:
      * @brief Destroy the GJFParser object
      * 
      */
-    ~GJFParser() {
-        m_gjf_file.close();
-    }
+    ~GJFParser() {}
 
     void SetCharge(int charge) {
         m_charge = charge;
@@ -79,7 +64,7 @@ public:
      * @return std::string 
      */
     std::string GetChargeAndSpinMultiplicityLine() {
-        return m_charge_and_spin_multiplicity_line;
+        return std::to_string(m_charge) + " " + std::to_string(m_spin_multiplicity);
     }
 
     /**
@@ -113,9 +98,9 @@ private:
      * @return true 
      * @return false 
      */
-    bool ReadGJFFile() {
+    bool ReadGJFFile(std::ifstream &gjf_file) {
         std::string line;
-        while(getline(m_gjf_file, line)) {
+        while (getline(gjf_file, line)) {
             // 接下来会读取原子和原子坐标
             if(m_read_atom_flag) {
                 // 遇到空行退出
@@ -153,9 +138,9 @@ private:
                     m_read_atom_flag = true;
                 }
                 else {
-                    std::cerr << "电荷，自旋多重度读取失败" << std::endl;
-                    break;
                     // error
+                    std::cerr << "电荷，自旋多重度读取失败" << std::endl;
+                    return false;
                 }
             }
         }
@@ -164,6 +149,8 @@ private:
             m_atoms_line += line;
         }
         DistinguishMainGroupAndTransition();
+        gjf_file.close();
+        return true;
     }
 
     /**
@@ -182,6 +169,10 @@ private:
                     m_transition_element_set.insert(element);
                 }
             }
+            return true;
+        }
+        else {
+            return false;
         }
     }
 
@@ -218,12 +209,6 @@ private:
 
 protected:
 
-    /**
-     * @brief gjf文件流
-     * 
-     */
-
-    std::ifstream m_gjf_file;
     /**
      * @brief 总元素种类的集合
      * 

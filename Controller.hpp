@@ -21,21 +21,6 @@ public:
      * @brief Construct a new Controller object
      * 
      * @param gjf_filename 
-     * @param option 
-     */
-    Controller(std::string gjf_filename, int option):
-        m_gjf_filename(gjf_filename),
-        m_option(option),
-        m_config(Constant::CONFIG_FILENAME),
-        m_gjfparser(gjf_filename),
-        m_com_generator(m_config, m_gjfparser, m_gjf_filename, m_option),
-        m_pbs_generator(m_gjf_filename)
-    {}
-
-    /**
-     * @brief Construct a new Controller object
-     * 
-     * @param gjf_filename 
      */
     Controller(std::string gjf_filename, int option, bool charge_flag, int charge, bool spin_flag, int spin):
         m_gjf_filename(gjf_filename),

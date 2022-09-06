@@ -19,7 +19,7 @@ void Usage() {
  */
 int main(int argc, char* argv[])
 {
-    if(argc != 3 || argc != 5 || argc != 7) {
+    if(argc != 3 && argc != 5 && argc != 7) {
         Usage();
         exit(1);
     }

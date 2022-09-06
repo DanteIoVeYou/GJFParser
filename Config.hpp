@@ -15,6 +15,7 @@
 class Config {
 
 public:
+    Config() {}
     /**
      * @brief 读取配置文件，将键值对存入哈希表
      *
@@ -23,7 +24,19 @@ public:
      * @return true
      * @return false
      */
-    Config(const std::string &filename) {
+    Config(const std::string &filename):
+        m_config_map({
+            {"LINK0", ""},
+            {"OPT_ROUTE", ""},
+            {"PSEUDO_OPT_ROUTE", ""},
+            {"TS_ROUTE", ""},
+            {"PSEUDO_TS_ROUTE", ""},
+            {"TITLE", ""},
+            {"BASIC_SET_METHOD", ""},
+            {"PSEUDOPOTENTIAL", ""},
+            {"PSEUDOPOTENTIAL_BASIC_SET", ""}
+        })
+    {
         std::ifstream in(filename);
         if(in.is_open()) {
             std::string line;
@@ -44,16 +57,20 @@ public:
                         // error
                     }
                     else {
-                        if(key.size() == 0 || value.size() == 0) {
+                        if (key.size() == 0 || value.size() == 0)
+                        {
                             continue;
                         }
                         else {
                             if(m_config_map.find(key) != m_config_map.end()) {
                                 // 找到对应的键
+                                std::cout << "key: " << key << " "
+                                          << "value: " << value << std::endl;
                                 m_config_map[key] = value;
                             }
                             else {
                                 // 非法的键
+                                // std::cout << line << std::endl;
                                 continue;
                             }
                         }
@@ -64,13 +81,23 @@ public:
         else {
             // error
         }
+
     }
 
     std::unordered_map<std::string, std::string> GetConfigMap() {
         return m_config_map;
     }
 
+    void ToString() {
+        for(auto e: m_config_map) {
+            std::cout << e.first << ":" << e.second << std::endl;
+        }
+    }
+
 protected:
+    void BuildConfigMap() {
+
+    }
     /**
      * @brief 判断行文本是否为被mark标注的注释行 
      * 
@@ -129,6 +156,8 @@ protected:
         *value = new_line.substr(pos_sep + 1);
         return true;
     }
+
+
 protected:
     /**
      * @brief 含有配置文件key、value的哈希表

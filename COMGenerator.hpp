@@ -20,22 +20,7 @@ public:
      * @brief Construct a new COMGenerator object
      * 
      */
-    // COMGenerator() {}
-
-    /**
-     * @brief Construct a new COMGenerator object
-     * 
-     * @param gjf_filename 文件名
-     */
-    COMGenerator(Config config, GJFParser gjfparser, std::string gjf_filename, int option):
-        m_gjf_filename(gjf_filename),
-        m_chk_filename("%chk=" + m_gjf_filename.substr(0, m_gjf_filename.find(".gjf"))),
-        m_config(config),
-        m_gjfparser(gjfparser),
-        m_option(option) 
-    {
-        SetConfig();
-    }
+    COMGenerator() {}
 
     COMGenerator(Config config, GJFParser gjfparser, std::string gjf_filename, int option, bool charge_flag, int charge, bool spin_flag, int spin):
         m_gjf_filename(gjf_filename),
@@ -51,6 +36,7 @@ public:
         if(spin_flag) {
             m_gjfparser.SetSpin(spin);
         }
+
     }
 
     /**
@@ -90,7 +76,6 @@ public:
         //     m_file_content += ("LANL2DZ" + Constant::LF);
         // }
         // m_file_content += Constant::LF;
-
         BuildLink0();
         BuildRoute();
         BuildBlankLine();
@@ -106,7 +91,7 @@ public:
             BuildPseudo();
         }
         BuildBlankLine();
-        BuildBlankLine();
+        return true;
     }
 
     /**
@@ -137,7 +122,7 @@ protected:
      * @return false 
      */
     bool NeedPseudo() {
-        return m_gjfparser.m_transition_element_set.empty();
+        return !m_gjfparser.m_transition_element_set.empty();
     }
 
     /**
@@ -250,7 +235,7 @@ protected:
      * @return false 
      */
     bool BuildMoleculeSpecification() {
-        m_molecule_specification = m_gjfparser.GetChargeAndSpinMultiplicityLine();
+        m_molecule_specification = m_gjfparser.GetAtomAndCoordinate();
         if (m_molecule_specification.empty())
         {
             return false;
@@ -302,7 +287,7 @@ protected:
         else {
             m_file_content += (m_pseudo_elements + Constant::LF);
             m_file_content += (m_pseudo_basic_set + Constant::LF);
-            m_file_content += ("****");
+            m_file_content += ("****" + Constant::LF);
             return true;
         }
     }
