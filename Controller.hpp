@@ -14,13 +14,24 @@
  * 
  */
 class Controller {
+
 public:
+
+    /**
+     * @brief Construct a new Controller object
+     * 
+     * @param gjf_filename 
+     * @param option 
+     */
     Controller(std::string gjf_filename, int option):
         m_gjf_filename(gjf_filename),
         m_option(option),
-        m_com_generator(m_option),
+        m_config(Constant::CONFIG_FILENAME),
+        m_gjfparser(gjf_filename),
+        m_com_generator(m_config, m_gjfparser, m_gjf_filename, m_option),
         m_pbs_generator(m_gjf_filename)
     {}
+
     /**
      * @brief Construct a new Controller object
      * 
@@ -29,7 +40,9 @@ public:
     Controller(std::string gjf_filename, int option, bool charge_flag, int charge, bool spin_flag, int spin):
         m_gjf_filename(gjf_filename),
         m_option(option),
-        m_com_generator(m_gjf_filename, m_option, charge_flag, charge, spin_flag, spin),
+        m_config(Constant::CONFIG_FILENAME),
+        m_gjfparser(gjf_filename),
+        m_com_generator(m_config, m_gjfparser, m_gjf_filename, m_option, charge_flag, charge, spin_flag, spin),
         m_pbs_generator(m_gjf_filename)
     {}
 
@@ -57,10 +70,20 @@ protected:
      * 
      */
     std::string m_gjf_filename;
-    // GJFParser m_gjf_parser;
-
+    /**
+     * @brief -opt/-ts
+     * 
+     */
     int m_option;
+    /**
+     * @brief 配置文件类
+     * 
+     */
     Config m_config;
+    /**
+     * @brief gjfparser类
+     * 
+     */
     GJFParser m_gjfparser;
     /**
      * @brief com generator成员
