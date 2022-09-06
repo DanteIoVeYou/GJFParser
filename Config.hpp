@@ -32,7 +32,7 @@ public:
             {"TS_ROUTE", ""},
             {"PSEUDO_TS_ROUTE", ""},
             {"TITLE", ""},
-            {"BASIC_SET_METHOD", ""},
+            {"FULL_ELECTRONIC_BASIC_SET_METHOD", ""},
             {"PSEUDOPOTENTIAL", ""},
             {"PSEUDOPOTENTIAL_BASIC_SET", ""}
         })

@@ -253,7 +253,8 @@ protected:
      * @return false 
      */
     bool BuildFullElectronicBasicSet() {
-        for(auto elem: m_gjfparser.m_main_group_element_set) {
+        for (auto elem : m_gjfparser.m_main_group_element_set)
+        {
             m_full_electronic_elements += elem;
             m_full_electronic_elements += ' ';
         }
@@ -331,7 +332,7 @@ protected:
         m_ts_route = m_config.GetConfigMap()["TS_ROUTE"];
         m_pseudo_ts_route = m_config.GetConfigMap()["PSEUDO_TS_ROUTE"];
         m_title = m_config.GetConfigMap()["TITLE"];
-        m_full_electronic_basic_set_method = m_config.GetConfigMap()["BASIC_SET_METHOD"];
+        m_full_electronic_basic_set_method = m_config.GetConfigMap()["FULL_ELECTRONIC_BASIC_SET_METHOD"];
         m_pseudo_basic_set = m_config.GetConfigMap()["PSEUDOPOTENTIAL_BASIC_SET"];
         m_pseudo = m_config.GetConfigMap()["PSEUDOPOTENTIAL"];
     }
